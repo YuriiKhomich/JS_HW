@@ -15,6 +15,7 @@ console.log(sumSmallNum([19, 5, 42, 2, 77]));
 console.log(sumSmallNum([10, 800, 3453000, 8010]));
 console.log(sumSmallNum([12, 898, 899, 900]))
 
+
 // второй вариант/
 function sumSmallNum1(numbers) {
 

@@ -7,3 +7,4 @@ function getNameOfDay(lang, day) {
     console.log(dayName);
 }
 getNameOfDay('ru', 1);
+getNameOfDay('en', 3);

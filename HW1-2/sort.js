@@ -11,10 +11,10 @@ function sortArray(arr) {
     }
     return arr;
 }
-let arr = [64, 5, 4, 11, -5, 'c', 'a', 'bd'];
+let arr = [64, 5, 4, 11, -5];
 let MyArray = sortArray(arr);
 console.log(MyArray);
 
-let arr1 = [64, 5, 4, 11, -5];
-arr1.sort((a, b) => a - b);
-console.log(arr1)
+//Простой вариант)
+arr.sort((a, b) => a - b);
+console.log(arr)

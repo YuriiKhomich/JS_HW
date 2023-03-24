@@ -23,4 +23,5 @@ let  arr = [1, 2, 3, 4, 5];
 let slicedArray = Myslice(arr, 1,3);
 console.log(slicedArray);
 
+//Так проще
 console.log(slicedArray2 = arr.slice(1,3))

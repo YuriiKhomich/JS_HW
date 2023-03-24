@@ -117,19 +117,19 @@ function createEmployeesFromArr(arr) {
     return arr.map(employeeObj => new Employee(employeeObj));
 }
 //Создать функцию которая вернет массив со всеми полными именами каждого employee,
-// содержащегося в emplyeeConstructArr;
+// содержащегося в employeeConstructArr;
 
 Employee.prototype.getFullName = function() {
     return this.surname + ' ' + this.name;
 };
 
-const emplyeeConstructArr = createEmployeesFromArr(employeeArr);
-console.log(emplyeeConstructArr);
+const employeeConstructArr = createEmployeesFromArr(employeeArr);
+console.log(employeeConstructArr);
 
 const getFullNamesFromArr = (arr) => {
     return arr.map(employee => employee.getFullName());
 };
-console.log(getFullNamesFromArr(emplyeeConstructArr));
+console.log(getFullNamesFromArr(employeeConstructArr));
 
 //Создать функцию которая вернет среднее значение зарплаты всех employee
 const getMiddleSalary = (arr) => {
@@ -139,15 +139,15 @@ const getMiddleSalary = (arr) => {
     }
     return totalSalary / arr.length;
 };
-let result = getMiddleSalary(emplyeeConstructArr)
+let result = getMiddleSalary(employeeConstructArr)
 console.log((`Средняя зарплата по палате: ${result}`));
 
-//Создать функцию которая выберет наугад работника из массива
+//Создать функцию которая выберет наугад работника на анигиляцию, из массива
 
 const getRandomEmployee = (arr) => {
     const randomIndex = Math.floor(Math.random() * arr.length);
     return arr[randomIndex];
 };
 console.log(`Случайный персонаж:`)
-console.log(getRandomEmployee(emplyeeConstructArr));
+console.log(getRandomEmployee(employeeConstructArr));
 
