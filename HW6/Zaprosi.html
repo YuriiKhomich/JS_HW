@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Получение данных по запросам</title>
+</head>
+<body>
+<button onclick="getPosts()">Получить посты</button>
+<button onclick="getUsers()">Получить пользователей</button>
+<button onclick="getTodos()">Получить задачи</button>
+
+<div id="data-section" style="display: none;">
+    <button onclick="goBack()">Назад</button>
+    <h2 id="data-header"></h2>
+    <ul id="data-list"></ul>
+</div>
+
+<script>
+    function getPosts() {
+        fetch('https://jsonplaceholder.typicode.com/posts')
+            .then(response => response.json())
+            .then(posts => {
+                const dataList = document.getElementById('data-list');
+                dataList.innerHTML = '';
+
+                posts.forEach(post => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<h3>${post.title}</h3><p>${post.body}</p>
+                                         <button onclick="getComments(${post.id})">Получить комментарии</button>`;
+                    dataList.appendChild(li);
+                });
+
+                // показываем блок с данными и задаем заголовок
+                const dataSection = document.getElementById('data-section');
+                dataSection.style.display = 'block';
+                const dataHeader = document.getElementById('data-header');
+                dataHeader.innerText = 'Посты';
+            });
+    }
+
+    function getUsers() {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            .then(users => {
+                const dataList = document.getElementById('data-list');
+                dataList.innerHTML = '';
+
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<h3>${user.name}</h3><p>${user.email}</p>`;
+                    dataList.appendChild(li);
+                });
+
+                // показываем блок с данными и задаем заголовок
+                const dataSection = document.getElementById('data-section');
+                dataSection.style.display = 'block';
+                const dataHeader = document.getElementById('data-header');
+                dataHeader.innerText = 'Пользователи';
+            });
+    }
+
+    function getTodos() {
+        fetch('https://jsonplaceholder.typicode.com/todos')
+            .then(response => response.json())
+            .then(todos => {
+                const dataList = document.getElementById('data-list');
+                dataList.innerHTML = '';
+
+                todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<h3>${todo.title}</h3><p>${todo.completed ? 'Выполнено' : 'Не выполнено'}</p>`;
+                    dataList.appendChild(li);
+                });
+
+                // показываем блок с данными и задаем заголовок
+                const dataSection = document.getElementById('data-section');
+                dataSection.style.display = 'block';
+                const dataHeader = document.getElementById('data-header');
+                dataHeader.innerText = 'Задачи';
+            });
+    }
+
+    function getComments(postId) {
+        fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+            .then(response => response.json())
+            .then(comments => {
+            const dataList = document.getElementById('data-list');
+                dataList.innerHTML = '';
+
+                comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<h3>${comment.name}</h3><p>${comment.body}</p>`;
+                    dataList.appendChild(li);
+                });
+
+                // показываем блок с данными и задаем заголовок
+                const dataSection = document.getElementById('data-section');
+                dataSection.style.display = 'block';
+                const dataHeader = document.getElementById('data-header');
+                dataHeader.innerText = 'Комментарии';
+            });
+    }
+    function goBack() {
+        // скрываем блок с данными и очищаем список
+        const dataSection = document.getElementById('data-section');
+        dataSection.style.display = 'none';
+
+        const dataList = document.getElementById('data-list');
+        dataList.innerHTML = '';
+    }
+</script>
+</body>
+</html>

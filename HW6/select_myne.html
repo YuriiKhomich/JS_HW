@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+  const employeeArr = [
+    {
+      id: 1,
+      name: 'Денис',
+      surname: 'Хрущ',
+      salary: 1010,
+      workExperience: 10, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 2,
+      name: 'Сергей',
+      surname: 'Войлов',
+      salary: 1200,
+      workExperience: 12, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 3,
+      name: 'Татьяна',
+      surname: 'Коваленко',
+      salary: 480,
+      workExperience: 3, /// стаж работы (1 = один месяц)
+      isPrivileges: true, /// льготы
+      gender: 'female'
+    },
+    {
+      id: 4,
+      name: 'Анна',
+      surname: 'Кугир',
+      salary: 2430,
+      workExperience: 20, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'female'
+    },
+    {
+      id: 5,
+      name: 'Татьяна',
+      surname: 'Капустник',
+      salary: 3150,
+      workExperience: 30, /// стаж работы (1 = один месяц)
+      isPrivileges: true, /// льготы
+      gender: 'female'
+    },
+    {
+      id: 6,
+      name: 'Станислав',
+      surname: 'Щелоков',
+      salary: 1730,
+      workExperience: 15, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 7,
+      name: 'Денис',
+      surname: 'Марченко',
+      salary: 5730,
+      workExperience: 45, /// стаж работы (1 = один месяц)
+      isPrivileges: true, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 8,
+      name: 'Максим',
+      surname: 'Меженский',
+      salary: 4190,
+      workExperience: 39, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 9,
+      name: 'Антон',
+      surname: 'Завадский',
+      salary: 790,
+      workExperience: 7, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+    {
+      id: 10,
+      name: 'Инна',
+      surname: 'Скакунова',
+      salary: 5260,
+      workExperience: 49, /// стаж работы (1 = один месяц)
+      isPrivileges: true, /// льготы
+      gender: 'female'
+    },
+    {
+      id: 11,
+      name: 'Игорь',
+      surname: 'Куштым',
+      salary: 300,
+      workExperience: 1, /// стаж работы (1 = один месяц)
+      isPrivileges: false, /// льготы
+      gender: 'male'
+    },
+  ];
+  const title = document.createElement('h1');
+  title.innerText = 'Employee Filter and Sorting';
+  document.body.appendChild(title);
+  class Employee {
+    constructor(cart, item) {
+      this.id = item.id;
+      this.name = item.name;
+      this.surname = item.surname;
+      this.salary = item.salary;
+      this.workExperience = item.workExperience;
+      this.isPrivileges = item.isPrivileges;
+      this.gender = item.gender;
+      this.htmlElement = document.createElement('div');
+      this.htmlElementText = document.createElement('p');
+      this.htmlElementText.innerText = `${this.surname} ${this.name}`;
+      this.htmlElement.appendChild(this.htmlElementText);
+      cart.htmlElement.appendChild(this.htmlElement);
+    }
+  }
+
+  class Cart {
+    constructor(employeeData) {
+      this.htmlElement = document.createElement('div');
+      document.body.appendChild(this.htmlElement);
+      this.employeeArr = employeeData.map(item => new Employee(this, item));
+      this.visibleEmployees = this.employeeArr.slice();
+      this.renderEmployees(this.visibleEmployees);
+    }
+
+    clearCart() {
+      this.visibleEmployees.map(item => item.htmlElement.remove());
+    }
+
+    filterByGender(gender1) {
+      return this.employeeArr.filter(employee => employee.gender === gender1);
+    }
+
+    filterBySalary(levelsalary) {
+      return this.employeeArr.filter(employee => employee.salary >= levelsalary);
+    }
+
+    renderEmployees(employees) {
+      employees.forEach(employee => {
+        this.htmlElement.appendChild(employee.htmlElement);
+      });
+    }
+  }
+
+  class SortManager {
+    constructor(cart) {
+      this.cart = cart;
+    }
+
+    sortByName() {
+      this.cart.visibleEmployees.sort((a, b) => a.name.localeCompare(b.name));
+      this.cart.renderEmployees(this.cart.visibleEmployees);
+    }
+
+    sortBySalary() {
+      this.cart.visibleEmployees.sort((a, b) => a.salary - b.salary);
+      this.cart.renderEmployees(this.cart.visibleEmployees);
+    }
+  }
+
+  class FilterManager {
+    constructor(cart, sortManager) {
+      this.cart = cart;
+      this.sortManager = sortManager;
+      this.createFilterSelector();
+    }
+
+    createFilterSelector() {
+      this.selectElement = document.createElement('select');
+      const options = [
+        { value: '', text: 'No filter' },
+        { value: 'gender', text: 'Filter by Gender' },
+        { value: 'levelsalary', text: 'Filter by Level Salary' },
+        { value: 'sortByName', text: 'Sort by Name' },
+        { value: 'sortBySalary', text: 'Sort by Salary' },
+      ];
+
+      options.forEach(optionData => {
+        const option = document.createElement('option');
+        option.value = optionData.value;
+        option.text = optionData.text;
+        this.selectElement.add(option);
+      });
+
+      this.selectElement.addEventListener('change', this.handleFilterChange.bind(this));
+      document.body.insertBefore(this.selectElement, this.cart.htmlElement);
+    }
+
+    handleFilterChange(event) {
+      const selectedValue = event.target.value;
+      this.cart.clearCart();
+
+      switch (selectedValue) {
+        case 'gender':
+          this.filterByGender();
+          break;
+        case 'levelsalary':
+          this.filterByLevelSalary();
+          break;
+        case 'sortByName':
+          this.sortManager.sortByName();
+          break;
+        case 'sortBySalary':
+          this.sortManager.sortBySalary();
+          break;
+        default:
+          this.showAllEmployees();
+      }
+    }
+    
+
+    filterByGender() {
+      const gender = prompt('Enter the gender (male or female):');
+      this.cart.visibleEmployees = this.cart.filterByGender(gender);
+      this.cart.renderEmployees(this.cart.visibleEmployees);
+    }
+
+    filterByLevelSalary() {
+      const salary = parseInt(prompt('Enter the minimum salary:'), 10);
+      this.cart.visibleEmployees = this.cart.filterBySalary(salary);
+      this.cart.renderEmployees(this.cart.visibleEmployees);
+    }
+
+    showAllEmployees() {
+      this.cart.visibleEmployees = this.cart.employeeArr.slice();
+      this.cart.renderEmployees(this.cart.visibleEmployees);
+    }
+  }
+
+  const cart = new Cart(employeeArr);
+  const sortManager = new SortManager(cart);
+  const filterManager = new FilterManager(cart, sortManager);
+
+</script>
+</body>
+</html>
