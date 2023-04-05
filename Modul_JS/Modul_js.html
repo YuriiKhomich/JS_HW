@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Список постов</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    li {
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+    h3 {
+      margin-top: 0;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+    }
+    button.delete-post
+  </style>
+</head>
+<body>
+<h1>Список постов</h1>
+
+<form id="add-post-form">
+  <div>
+    <label for="title">Заголовок:</label>
+    <input type="text" id="title" name="title">
+  </div>
+  <div>
+    <label for="body">Текст:</label>
+    <textarea id="body" name="body"></textarea>
+  </div>
+  <button type="submit" id="add-post">Добавить пост</button>
+</form>
+
+<ul id="post-list">
+</ul>
+
+<script>
+  function getPosts() {
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/posts',
+      method: 'GET',
+      success: function(posts) {
+        console.log('Список постов:', posts);
+        for (var i = 0; i < posts.length; i++) {
+          addPostToList(posts[i]);
+        }
+      },
+      error: function(error) {
+        console.log('Ошибка получения списка постов:', error);
+      }
+    });
+  }
+  function addPostToList(post) {
+    let li = $('<li>').attr('data-post-id', post.id);
+    let h3 = $('<h3>').text(post.title);
+    let p = $('<p>').text(post.body);
+    let editButton = $('<button>').addClass('edit-post').text('Редактировать');
+    let deleteButton = $('<button>').addClass('delete-post').text('Удалить');
+    li.append(h3, p, editButton, deleteButton);
+    $('#post-list').append(li);
+  }
+  function addPost() {
+    let title = $('#title').val();
+    let body = $('#body').val();
+
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/posts',
+      method: 'POST',
+      data: {
+        title: title,
+        body: body,
+        userId: 1
+      },
+      success: function(post) {
+        console.log('Новый пост:', post);
+        addPostToList(post);
+        $('#title').val('');
+        $('#body').val('');
+      },
+      error: function(error) {console.log('Ошибка добавления поста:', error);
+      }
+    });
+  }
+  function savePost(postId) {
+    let li = $('[data-post-id="' + postId + '"]');
+    let title = li.find('h3').text();
+    let body = li.find('p').text();
+
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/posts/' + postId,
+      method: 'PUT',
+      data: {
+        id: postId,
+        title: title,
+        body: body,
+        userId: 1
+      },
+      success: function(post) {
+        console.log('Измененный пост:', post);
+
+        li.find('h3').text(post.title);
+        li.find('p').text(post.body);
+
+        li.find('.edit-post').text('Редактировать').removeClass('save-post');
+      },
+      error: function(error) {
+        console.log('Ошибка сохранения поста:', error);
+      }
+    });
+  }
+
+  function deletePost(postId) {
+    $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/posts/' + postId,
+      method: 'DELETE',
+      success: function() {
+        console.log('Пост успешно удален');
+
+        $('[data-post-id="' + postId + '"]').remove();
+      },
+      error: function(error) {
+        console.log('Ошибка удаления поста:', error);
+      }
+    });
+  }
+
+  $('#add-post-form').on('submit', function(event) {
+    event.preventDefault();
+    addPost();
+  });
+
+  $(document).on('click', '.edit-post', function() {
+    let li = $(this).closest('li');
+    let postId = li.data('post-id');
+    let isEditing = $(this).hasClass('save-post');
+
+    if (isEditing) {
+      savePost(postId);
+    } else {
+      $(this).text('Сохранить').addClass('save-post');
+
+      let title = li.find('h3').text();
+      let body = li.find('p').text();
+      li.find('h3').html('<input type="text" value="' + title + '">');
+      li.find('p').html('<textarea>' + body + '</textarea>');
+    }
+  });
+  $(document).on('click', '.delete-post', function() {
+    let postId = $(this).closest('li').data('post-id');
+    deletePost(postId);
+  });
+
+  getPosts();
+</script>
+</body>
+</html>
